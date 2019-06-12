@@ -1,9 +1,9 @@
 'use strict'
 
 const { validate } = use('Validator')
-const Hash = use('Hash')
 const randomstring = require('randomstring')
 const Messages = use('App/Utils/Messages')
+const Sms = use('App/Utils/Sms')
 const phone = require('phone')
 
 const User = use('App/Models/User')
@@ -48,7 +48,7 @@ class AuthController {
     user.verify_code = verifyCode
     await user.save()
 
-    // Send SMS or Email
+    Sms.send(user.mobile, `verification code is ${user.verify_code}`)
 
     return response.send({
       messages: [],
@@ -101,7 +101,7 @@ class AuthController {
     user.verify_code = verifyCode
     await user.save()
 
-    // Send SMS or Email
+    Sms.send(user.mobile, `verification code is ${user.verify_code}`)
 
     return response.send({
       messages: [],

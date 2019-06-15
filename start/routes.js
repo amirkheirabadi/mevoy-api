@@ -22,10 +22,10 @@ Route.group(() => {
 }).prefix('/mqtt')
 
 Route.group(() => {
-  Route.any('/', 'Api/AuthController.signin')
-  Route.any('/signup', 'Api/AuthController.signup')
-  Route.any('/verify', 'Api/AuthController.verify')
-  Route.any('/signout', 'Api/AuthController.signout')
-}).prefix('/api/auth')
+  Route.any('/auth/', 'Api/AuthController.signin')
+  Route.any('/auth/signup', 'Api/AuthController.signup')
+  Route.any('/auth/verify', 'Api/AuthController.verify')
+  Route.any('/auth/signout', 'Api/AuthController.signout')
+}).prefix('/api')
 
 Route.on('/').render('welcome')

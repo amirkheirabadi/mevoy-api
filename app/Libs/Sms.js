@@ -21,3 +21,4 @@ class Sms {
     }
   }
 }
+module.exports = Sms

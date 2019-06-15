@@ -2,8 +2,8 @@
 
 const { validate } = use('Validator')
 const randomstring = require('randomstring')
-const Messages = use('App/Utils/Messages')
-const Sms = use('App/Utils/Sms')
+const Message = use('App/Libs/Message')
+const Sms = use('App/Libs/Sms')
 const phone = require('phone')
 
 const User = use('App/Models/User')
@@ -18,7 +18,7 @@ class AuthController {
 
     if (validation.fails()) {
       return response.status(400).send({
-        messages: Messages.normalizeMessages(validation.messages()),
+        messages: Message.normalizeMessages(validation.messages()),
         data: {},
       })
     }
@@ -48,7 +48,7 @@ class AuthController {
     user.verify_code = verifyCode
     await user.save()
 
-    Sms.send(user.mobile, `verification code is ${user.verify_code}`)
+    // Sms.send(user.mobile, `verification code is ${user.verify_code}`)
 
     return response.send({
       messages: [],
@@ -68,7 +68,7 @@ class AuthController {
 
     if (validation.fails()) {
       return response.status(400).send({
-        messages: Messages.normalizeMessages(validation.messages()),
+        messages: Message.normalizeMessages(validation.messages()),
         data: {},
       })
     }
@@ -101,7 +101,7 @@ class AuthController {
     user.verify_code = verifyCode
     await user.save()
 
-    Sms.send(user.mobile, `verification code is ${user.verify_code}`)
+    // Sms.send(user.mobile, `verification code is ${user.verify_code}`)
 
     return response.send({
       messages: [],
@@ -119,7 +119,7 @@ class AuthController {
 
     if (validation.fails()) {
       return response.status(400).send({
-        messages: Messages.normalizeMessages(validation.messages()),
+        messages: Message.normalizeMessages(validation.messages()),
         data: {},
       })
     }
@@ -176,7 +176,7 @@ class AuthController {
 
     if (validation.fails()) {
       return response.status(400).send({
-        messages: Messages.normalizeMessages(validation.messages()),
+        messages: Message.normalizeMessages(validation.messages()),
         data: {},
       })
     }

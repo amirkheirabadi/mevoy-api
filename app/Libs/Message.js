@@ -8,3 +8,5 @@ class Message {
     return str
   }
 }
+
+module.exports = Message

@@ -1,12 +1,11 @@
 'use strict'
 
 const { hooks } = require('@adonisjs/ignitor')
-const phone = require('phone')
-const Validator = use('Validator')
-
-const testController = use('App/Controllers/Http/Api/MonitorLib')
-
+// const testController = use('App/Controllers/Http/Api/MonitorLib')
 hooks.after.providersRegistered(async () => {
+  const phone = require('phone')
+  const Validator = use('Validator')
+
   // Custome Validator rules
   const mobileCheck = async (data, field, message, args, get) => {
     const value = get(data, field)
@@ -22,7 +21,7 @@ hooks.after.providersRegistered(async () => {
     const mobileDetect = phone(value, country)
 
     if (!mobileDetect.length) {
-      throw message
+      throw 'number is invalid.'
     }
   }
   Validator.extend('mobile', mobileCheck)

@@ -24,21 +24,13 @@ class AuthController {
     }
 
     const mobileNormalize = phone(request.input('mobile'))
-    const user = await User.query()
+    let user = await User.query()
       .where('mobile', mobileNormalize[0])
       .first()
     if (!user) {
-      return response.status(404).send({
-        messages: ['user not found'],
-        data: {},
-      })
-    }
-
-    if (user.verify != 'yes') {
-      return response.status(400).send({
-        messages: ['user is not verify'],
-        data: {},
-      })
+      user = new User()
+      user.mobile = mobileNormalize[0]
+      user.status = 'pending'
     }
 
     const verifyCode = randomstring.generate({
@@ -56,7 +48,7 @@ class AuthController {
     })
   }
 
-  async signup({ request, response }) {
+  async complete({ request, response }) {
     const rules = {
       first_name: 'required',
       last_name: 'required',
@@ -76,23 +68,20 @@ class AuthController {
 
     let user = await User.query()
       .where('mobile', mobileNormalize[0])
+      .where('status', 'pending')
       .first()
-    if (user) {
-      if (user.verify == 'yes') {
-        return response.status(400).send({
-          messages: ['user is currently active'],
-          status: [],
-        })
-      }
-    } else {
-      user = new User()
 
-      user.first_name = request.input('first_name')
-      user.last_name = request.input('last_name')
-      user.email = request.input('email')
-      user.verify = 'no'
-      user.mobile = mobileNormalize[0]
+    if (!user) {
+      return response.status(400).send({
+        messages: ['user is not exists'],
+        status: [],
+      })
     }
+
+    user.first_name = request.input('first_name')
+    user.last_name = request.input('last_name')
+    user.email = request.input('email')
+    user.status = 'active'
 
     const verifyCode = randomstring.generate({
       length: 5,
@@ -112,7 +101,7 @@ class AuthController {
   async verify({ request, response }) {
     const rules = {
       mobile: 'required|mobile',
-      verify: 'required',
+      code: 'required',
     }
 
     const validation = await validate(request.all(), rules)
@@ -136,34 +125,26 @@ class AuthController {
       })
     }
 
-    if (user.verify == 'yes') {
-      user.token = randomstring.generate({
-        length: 15,
-        charset: 'alphanumeric',
-      })
-
-      await user.save()
-      return response.send({
-        messages: [],
-        data: {
-          token: user.token,
-        },
-      })
-    }
-
-    if (user.verify_code != request.input('verify')) {
+    if (user.verify_code != request.input('code')) {
       return response.status(400).send({
         messages: ['verify code is wrong'],
         data: {},
       })
     }
 
-    user.verify = 'yes'
+    user.token = randomstring.generate({
+      length: 15,
+      charset: 'alphanumeric',
+    })
+
     await user.save()
 
     return response.send({
       messages: [],
-      data: {},
+      data: {
+        token: user.token,
+        status: user.status,
+      },
     })
   }
 

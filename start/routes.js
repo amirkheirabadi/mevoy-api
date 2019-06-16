@@ -22,8 +22,8 @@ Route.group(() => {
 }).prefix('/mqtt')
 
 Route.group(() => {
-  Route.any('/auth/', 'Api/AuthController.signin')
-  Route.any('/auth/signup', 'Api/AuthController.signup')
+  Route.any('/auth', 'Api/AuthController.signin')
+  Route.any('/auth/complete', 'Api/AuthController.complete')
   Route.any('/auth/verify', 'Api/AuthController.verify')
   Route.any('/auth/signout', 'Api/AuthController.signout')
 }).prefix('/api')

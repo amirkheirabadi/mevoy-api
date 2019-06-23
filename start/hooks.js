@@ -34,31 +34,53 @@ hooks.after.providersRegistered(async () => {
       const secret = Env.get('APP_KEY')
       const mqttAddress = Env.get('MQTT_ADDRESS')
 
+      const User = use('App/Models/User')
+      const UserController = use('App/Controllers/Mqtt/UserController')
+
       // Connect backend to mqtt as server
       global.client = await mqtt.connect('tcp://' + mqttAddress, {
         clientId: secret,
-        username: 'test',
-        password: 'test',
+        username: 'server',
+        password: 'server',
         protocolId: 'MQIsdp',
         protocolVersion: 3,
         connectTimeout: 5000,
       })
-
       // Subscribe
       global.client.on('connect', async () => {
-        console.log('Server connected to MQTT ...')
-        global.client.subscribe('api')
+        setTimeout(() => {
+          global.client.subscribe('api/#', err => {
+            if (!err) {
+              console.log('Server connected to MQTT ...')
+            }
+          })
+        }, 100)
       })
 
       // Check message from monitors
-      global.client.on('message', async (topic, message) => {
+      global.client.on('message', async (topic, message, packet) => {
         const msg = message.toString()
         const parsedMsg = JSON.parse(msg)
 
-        // Call function for each operation
+        const parseTopic = topic.split('/')
+        if (parseTopic.length != 2 || parseTopic[0] != 'api') {
+          return false
+        }
+
+        const user = await User.query('token', parseTopic[1]).first()
+        if (!user) {
+          return false
+        }
+
+        const request = {
+          data: parsedMsg,
+          user: user,
+          callbackTopic: 'callback/' + user.token,
+        }
+
         switch (topic) {
-          case 'test':
-            // testController.getCurrentBook(parsedMsg.monitor)
+          case 'SET_PROFILE':
+            // await UserController.setProfile(request)
             break
         }
       })

@@ -17,8 +17,8 @@
 const Route = use('Route')
 
 Route.group(() => {
-  Route.any('/auth', 'MqttController.auth')
-  Route.any('/acl', 'MqttController.acl')
+  Route.any('/auth', 'Api/MqttController.auth')
+  Route.any('/acl', 'Api/MqttController.acl')
 }).prefix('/mqtt')
 
 Route.group(() => {
@@ -26,6 +26,8 @@ Route.group(() => {
   Route.any('/auth/complete', 'Api/AuthController.complete')
   Route.any('/auth/verify', 'Api/AuthController.verify')
   Route.any('/auth/signout', 'Api/AuthController.signout')
+
+  Route.any('/user/profile', 'Api/UserController.profile')
 }).prefix('/api')
 
 Route.on('/').render('welcome')

@@ -4,7 +4,7 @@ const Env = use('Env')
 class Sms {
   static async send(number, message) {
     try {
-      const client = Twilio(
+      const client = new Twilio(
         Env.get('TWILIO_ACCOUNT_SID'),
         Env.get('TWILIO_TOKEN')
       )

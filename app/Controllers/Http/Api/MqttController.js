@@ -2,14 +2,13 @@
 
 const Env = use('Env')
 const { validate } = use('Validator')
-const phone = require('./node_modules/phone')
+const phone = require('phone')
 
 const User = use('App/Models/User')
 
 class MqttController {
   // Check auth for monitors
   async auth({ request, response }) {
-    console.log(request.all())
     const validation = await validate(request.all(), {
       clientid: 'required',
       username: 'required',
@@ -25,11 +24,8 @@ class MqttController {
       return true
     }
 
-    const mobileNormalize = phone(request.input('username'), '')
-
     const user = await User.query()
       .where('token', request.input('clientid'))
-      .where('mobile', mobileNormalize.length ? mobileNormalize[0] : '')
       .first()
 
     if (!user) {

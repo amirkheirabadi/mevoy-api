@@ -80,7 +80,7 @@ hooks.after.providersRegistered(async () => {
 
         switch (topic) {
           case 'SET_PROFILE':
-            // await UserController.setProfile(request)
+            await UserController.setProfile(request)
             break
         }
       })

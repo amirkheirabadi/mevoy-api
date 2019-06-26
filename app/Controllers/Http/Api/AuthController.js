@@ -15,7 +15,6 @@ class AuthController {
     }
 
     const validation = await validate(request.all(), rules)
-
     if (validation.fails()) {
       return response.status(400).send({
         messages: Message.normalizeMessages(validation.messages()),
@@ -40,7 +39,7 @@ class AuthController {
     user.verify_code = verifyCode
     await user.save()
 
-    // Sms.send(user.mobile, `verification code is ${user.verify_code}`)
+    Sms.send(user.mobile, `verification code is ${user.verify_code}`)
 
     return response.send({
       messages: [],

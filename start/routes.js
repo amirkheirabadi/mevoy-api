@@ -30,4 +30,23 @@ Route.group(() => {
   Route.any('/user/profile', 'Api/UserController.profile')
 }).prefix('/api')
 
+Route.group(() => {
+  Route.any('/', 'Admin/DashboardController.index')
+
+  Route.any('/users/edit/:id', 'Admin/UserController.edit')
+  Route.any('/users/delete/:id', 'Admin/UserController.delete')
+  Route.any('/users', 'Admin/UserController.index')
+
+  Route.any('/admins/edit/:id', 'Admin/AdminController.edit')
+  Route.any('/admins/create', 'Admin/AdminController.create')
+  Route.any('/admins/delete/:id', 'Admin/AdminController.delete')
+  Route.any('/admins', 'Admin/AdminController.index')
+})
+  .prefix('/dashboard')
+  .middleware(['auth'])
+
+Route.group(() => {
+  Route.any('/', 'Admin/AuthController.signin')
+}).prefix('/auth')
+
 Route.on('/').render('welcome')

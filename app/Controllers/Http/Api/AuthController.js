@@ -39,7 +39,7 @@ class AuthController {
     user.verify_code = verifyCode
     await user.save()
 
-    Sms.send(user.mobile, `verification code is ${user.verify_code}`)
+    // Sms.send(user.mobile, `verification code is ${user.verify_code}`)
 
     return response.send({
       messages: [],
